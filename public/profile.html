@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+</head>
+<body>
+
+    <h1>Welcome to your Profile</h1>
+
+    <div id="profileInfo">Loading profile...</div>
+
+    <br><br>
+    <button onclick="logout()">Logout</button>
+
+    <script>
+        async function loadProfile() {
+            const token = localStorage.getItem("token");
+
+            // No token → redirect to login
+            if (!token) {
+                alert("Please login first");
+                window.location.href = "login.html";
+                return;
+            }
+
+            // Send token to backend
+            const res = await fetch("http://localhost:5009/profile", {
+                method: "GET",
+                headers: {
+                    "Authorization": token
+                }
+            });
+
+            const data = await res.json();
+
+            // Invalid token → logout + redirect
+            if (data.msg === "Invalid token") {
+                alert("Session expired. Login again.");
+                localStorage.removeItem("token");
+                window.location.href = "login.html";
+                return;
+            }
+
+            // Show profile info
+            document.getElementById("profileInfo").innerHTML = `
+                <p><strong>Email:</strong> ${data.email}</p>
+            `;
+        }
+
+        function logout() {
+            localStorage.removeItem("token");
+            window.location.href = "login.html";
+        }
+
+        loadProfile();
+    </script>
+
+</body>
+</html>

@@ -50,7 +50,7 @@ app.post("/login", async (req, res) => {
     return res.json({ msg: "Invalid credentials" });
   }
 
-  const token = jwt.sign({ email: user.email }, JWT_SECRET, {
+  const token = jwt.sign({ email: user.email,name:user.name }, JWT_SECRET, {
     expiresIn: "1h",
   });
 

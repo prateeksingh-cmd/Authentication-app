@@ -14,7 +14,9 @@ const JWT_SECRET = "yourjwtsecretkeyyyy";
 app.get("/",(req,res)=>{
     res.send("Welcome to the Authentication Server");
 });
-
+//  Get info of Users
+app.get("/users",(req,res)=>{
+    res.json(users)});
 // SIGNUP
 app.post("/signup", async (req, res) => {
   const { name, email, password } = req.body;
@@ -36,7 +38,7 @@ app.post("/signup", async (req, res) => {
 
 // LOGIN
 app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password ,name} = req.body;
 
   const user = users.find(u => u.email === email);
   if (!user) {
@@ -61,7 +63,7 @@ app.get("/profile", (req, res) => {
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     console.log(decoded);
-    res.json({ msg: "Profile data", email: decoded.email });
+    res.json({ msg: "Profile data", email: decoded.email,name:decoded.name });
   } catch {
     res.json({ msg: "Invalid token" });
   }
